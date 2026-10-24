@@ -1,0 +1,25 @@
+[Unit]
+Description=Apache Tomcat 9
+After=network.target
+
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+UMask=0007
+Restart=always
+RestartSec=10
+
+# JAVA_HOME is set in install-tomcat.sh via /opt/tomcat/bin/setenv.sh
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment="CATALINA_OPTS=-Xms256M -Xmx512M -server"
+# DB_URL / DB_USERNAME / DB_PASSWORD come from here (keeps secrets out of the unit file)
+EnvironmentFile=/etc/tomcat.env
+
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
